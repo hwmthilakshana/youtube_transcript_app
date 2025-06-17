@@ -12,19 +12,17 @@ if url:
     video_id = extract_video_id(url)
 
     if video_id:
-        transcript, error = get_spanish_transcript(video_id)
+        with st.spinner("Fetching transcript..."):
+            transcript, error = get_spanish_transcript(video_id)
+
         if error:
             st.error(error)
         else:
             st.success("Transcript retrieved successfully!")
 
-            # Combine transcript into a single string
             full_text = "\n".join([entry['text'] for entry in transcript])
-
-            # Show in a copy-friendly text box
             st.text_area("📋 Transcript", full_text, height=300)
 
-            # Prepare download
             file_name = f"{custom_title.strip() or 'transcript'}.txt"
             st.download_button(
                 label="📥 Download Transcript as .txt",
@@ -33,7 +31,6 @@ if url:
                 mime="text/plain"
             )
 
-            # Optional: Word format (.docx) download
             try:
                 from docx import Document
                 doc = Document()
